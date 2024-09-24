@@ -5,7 +5,7 @@ from homeassistant.helpers import device_registry as dr
 from .const import DOMAIN, PLATFORMS
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry):
-    """Set up EVSE integration from a config entry."""
+    """Set up SmartWB integration from a config entry."""
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][config_entry.entry_id] = config_entry.data
 
