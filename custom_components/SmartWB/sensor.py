@@ -12,9 +12,9 @@ from .const import DOMAIN
 _LOGGER = logging.getLogger(__name__)
 
 class SmartWBSensor(SensorEntity):
-    """Representation of an SmartWB sensor."""
+    """Representation of a SmartWB sensor."""
 
-    def __init__(self, name, ip, port, attribute, unit, friendly_name, entry_id, unique_id, icon=None):
+    def __init__(self, name, ip, port, attribute, unit, friendly_name, unique_id, icon=None):
         """Initialize the sensor."""
         self._name = name
         self._ip = ip
@@ -25,13 +25,13 @@ class SmartWBSensor(SensorEntity):
         self._icon = icon
         self._state = None
         self._attr_unique_id = f"{unique_id}_{self._attribute}"
-        self._entry_id = entry_id
+        self._unique_id = unique_id  # This ties the sensor to the device
 
     @property
     def device_info(self):
-        """Return device information."""
+        """Return device information, ensuring all sensors are tied to the same device."""
         return {
-            "identifiers": {(DOMAIN, self._entry_id)},
+            "identifiers": {(DOMAIN, self._unique_id)},
         }
 
     @property
