@@ -1,5 +1,7 @@
 # Readme
 
+![icon](https://github.com/user-attachments/assets/8be7ce6d-c8d2-4e99-9ca8-609846483845)
+
 This is a custom component to control your SimpleEVSE-WiFi car charger controller made by SmartWB in Home Assistant (https://github.com/CurtRod/SimpleEVSE-WiFi) (https://www.smartwb.de/)
 
 # What is working:
