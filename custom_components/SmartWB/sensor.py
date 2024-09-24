@@ -14,30 +14,31 @@ _LOGGER = logging.getLogger(__name__)
 class SmartWBSensor(SensorEntity):
     """Representation of a SmartWB sensor."""
 
-    def __init__(self, name, ip, port, attribute, unit, friendly_name, unique_id, icon=None):
+    def __init__(self, name, ip, port, attribute, unit, friendly_name, unique_id, device_name, icon=None):
         """Initialize the sensor."""
-        self._name = name
+        self._name = name  # Sensor-specific name
         self._ip = ip
         self._port = port
         self._attribute = attribute
         self._unit = unit
-        self._friendly_name = friendly_name
+        self._friendly_name = friendly_name  # Unique friendly name for each sensor
         self._icon = icon
         self._state = None
         self._attr_unique_id = f"{unique_id}_{self._attribute}"
-        self._unique_id = unique_id  # This ties the sensor to the device
+        self._unique_id = unique_id  # Links the sensor to the device
+        self._device_name = device_name  # The device name from config flow
 
     @property
     def device_info(self):
-        """Return device information, ensuring all sensors are tied to the same device."""
+        """Return device information, ensuring all sensors are tied to the same device with the config name."""
         return {
-            "identifiers": {(DOMAIN, self._unique_id)},
+            "identifiers": {(DOMAIN, self._unique_id)},  # This links to the single device
         }
 
     @property
     def name(self):
         """Return the name of the sensor."""
-        return self._name
+        return self._friendly_name  # Return the friendly name for the sensor
 
     @property
     def state(self):
@@ -103,12 +104,11 @@ class SmartWBSensor(SensorEntity):
             _LOGGER.error(f"Unexpected error fetching data from {url}: {e}")
             self._state = None
 
-async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
-    """Set up the SmartWB sensors from a config entry."""
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up the SmartWB sensors."""
     ip = config_entry.data['ip_address']
     port = config_entry.data['port']
-    name = config_entry.data['name']
-    entry_id = config_entry.entry_id
+    device_name = config_entry.data['name']  # Device name from config flow
     unique_id = config_entry.unique_id
 
     # Test connection before setting up entities
@@ -125,26 +125,26 @@ async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, asyn
 
     # Create sensor entities
     sensors = [
-        SmartWBSensor(f"{name}_actual_current", ip, port, "actualCurrent", "A", "Actual Current", entry_id, unique_id, "mdi:current-ac"),
-        SmartWBSensor(f"{name}_actual_power", ip, port, "actualPower", "kW", "Actual Power", entry_id, unique_id, "mdi:lightning-bolt"),
-        SmartWBSensor(f"{name}_duration", ip, port, "duration", "Minutes", "Duration", entry_id, unique_id, "mdi:clock-time-eight-outline"),
-        SmartWBSensor(f"{name}_vehicle_state", ip, port, "vehicleState", None, "Vehicle State", entry_id, unique_id),
-        SmartWBSensor(f"{name}_max_current", ip, port, "maxCurrent", "A", "Max Current", entry_id, unique_id, "mdi:current-ac"),
-        SmartWBSensor(f"{name}_actual_current_ma", ip, port, "actualCurrentMA", "mA", "Actual Current (mA)", entry_id, unique_id, "mdi:current-ac"),
-        SmartWBSensor(f"{name}_always_active", ip, port, "alwaysActive", None, "Always Active", entry_id, unique_id, "mdi:clock-time-eight-outline"),
-        SmartWBSensor(f"{name}_last_action_user", ip, port, "lastActionUser", None, "Last Action User", entry_id, unique_id),
-        SmartWBSensor(f"{name}_last_action_uid", ip, port, "lastActionUID", None, "Last Action UID", entry_id, unique_id),
-        SmartWBSensor(f"{name}_energy", ip, port, "energy", "kWh", "Energy", entry_id, unique_id, "mdi:lightning-bolt"),
-        SmartWBSensor(f"{name}_mileage", ip, port, "mileage", "km", "Mileage", entry_id, unique_id, "mdi:map-marker-distance"),
-        SmartWBSensor(f"{name}_meter_reading", ip, port, "meterReading", "kWh", "Meter Reading", entry_id, unique_id, "mdi:meter-electric"),
-        SmartWBSensor(f"{name}_current_p1", ip, port, "currentP1", "A", "Current Phase 1", entry_id, unique_id, "mdi:current-ac"),
-        SmartWBSensor(f"{name}_current_p2", ip, port, "currentP2", "A", "Current Phase 2", entry_id, unique_id, "mdi:current-ac"),
-        SmartWBSensor(f"{name}_current_p3", ip, port, "currentP3", "A", "Current Phase 3", entry_id, unique_id, "mdi:current-ac"),
-        SmartWBSensor(f"{name}_voltage_p1", ip, port, "voltageP1", "V", "Voltage Phase 1", entry_id, unique_id, "mdi:lightning-bolt"),
-        SmartWBSensor(f"{name}_voltage_p2", ip, port, "voltageP2", "V", "Voltage Phase 2", entry_id, unique_id, "mdi:lightning-bolt"),
-        SmartWBSensor(f"{name}_voltage_p3", ip, port, "voltageP3", "V", "Voltage Phase 3", entry_id, unique_id, "mdi:lightning-bolt"),
-        SmartWBSensor(f"{name}_use_meter", ip, port, "useMeter", None, "Use Meter", entry_id, unique_id),
-        SmartWBSensor(f"{name}_rfid_uid", ip, port, "RFIDUID", None, "RFID UID", entry_id, unique_id)
+        SmartWBSensor(f"{device_name}_actual_current", ip, port, "actualCurrent", "A", "Actual Current", unique_id, device_name, "mdi:current-ac"),
+        SmartWBSensor(f"{device_name}_actual_power", ip, port, "actualPower", "kW", "Actual Power", unique_id, device_name, "mdi:lightning-bolt"),
+        SmartWBSensor(f"{device_name}_duration", ip, port, "duration", "Minutes", "Duration", unique_id, device_name, "mdi:clock-time-eight-outline"),
+        SmartWBSensor(f"{device_name}_vehicle_state", ip, port, "vehicleState", None, "Vehicle State", unique_id, device_name),
+        SmartWBSensor(f"{device_name}_max_current", ip, port, "maxCurrent", "A", "Max Current", unique_id, device_name, "mdi:current-ac"),
+        SmartWBSensor(f"{device_name}_actual_current_ma", ip, port, "actualCurrentMA", "mA", "Actual Current (mA)", unique_id, device_name, "mdi:current-ac"),
+        SmartWBSensor(f"{device_name}_always_active", ip, port, "alwaysActive", None, "Always Active", unique_id, device_name, "mdi:clock-time-eight-outline"),
+        SmartWBSensor(f"{device_name}_last_action_user", ip, port, "lastActionUser", None, "Last Action User", unique_id, device_name),
+        SmartWBSensor(f"{device_name}_last_action_uid", ip, port, "lastActionUID", None, "Last Action UID", unique_id, device_name),
+        SmartWBSensor(f"{device_name}_energy", ip, port, "energy", "kWh", "Energy", unique_id, device_name, "mdi:lightning-bolt"),
+        SmartWBSensor(f"{device_name}_mileage", ip, port, "mileage", "km", "Mileage", unique_id, device_name, "mdi:map-marker-distance"),
+        SmartWBSensor(f"{device_name}_meter_reading", ip, port, "meterReading", "kWh", "Meter Reading", unique_id, device_name, "mdi:meter-electric"),
+        SmartWBSensor(f"{device_name}_current_p1", ip, port, "currentP1", "A", "Current Phase 1", unique_id, device_name, "mdi:current-ac"),
+        SmartWBSensor(f"{device_name}_current_p2", ip, port, "currentP2", "A", "Current Phase 2", unique_id, device_name, "mdi:current-ac"),
+        SmartWBSensor(f"{device_name}_current_p3", ip, port, "currentP3", "A", "Current Phase 3", unique_id, device_name, "mdi:current-ac"),
+        SmartWBSensor(f"{device_name}_voltage_p1", ip, port, "voltageP1", "V", "Voltage Phase 1", unique_id, device_name, "mdi:lightning-bolt"),
+        SmartWBSensor(f"{device_name}_voltage_p2", ip, port, "voltageP2", "V", "Voltage Phase 2", unique_id, device_name, "mdi:lightning-bolt"),
+        SmartWBSensor(f"{device_name}_voltage_p3", ip, port, "voltageP3", "V", "Voltage Phase 3", unique_id, device_name, "mdi:lightning-bolt"),
+        SmartWBSensor(f"{device_name}_use_meter", ip, port, "useMeter", None, "Use Meter", unique_id, device_name),
+        SmartWBSensor(f"{device_name}_rfid_uid", ip, port, "RFIDUID", None, "RFID UID", unique_id, device_name)
     ]
 
     # Add the sensors
