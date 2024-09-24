@@ -1,5 +1,5 @@
 {
-  "domain": "smartwb",
+  "domain": "SmartWB",
   "name": "SmartWB",
   "codeowners": ["@DominikWrobel"],
   "config_flow": true,
