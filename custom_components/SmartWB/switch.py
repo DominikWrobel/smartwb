@@ -11,37 +11,40 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up the SmartWB switch."""
     ip = config_entry.data['ip_address']
     port = config_entry.data['port']
-    name = config_entry.data['name']
+    device_name = config_entry.data['name']  # Device name from config flow
+    unique_id = config_entry.unique_id
 
-    switch = SmartWBSwitch(hass, f"{name}_switch", ip, port, config_entry.entry_id, config_entry.unique_id)
+    switch = SmartWBSwitch(hass, f"{device_name}_switch", ip, port, config_entry.entry_id, unique_id, device_name)
     async_add_entities([switch], True)
 
 class SmartWBSwitch(SwitchEntity):
-    """Representation of an SmartWB switch."""
+    """Representation of a SmartWB switch."""
 
-    def __init__(self, hass, name, ip, port, entry_id, unique_id):
+    def __init__(self, hass, name, ip, port, entry_id, unique_id, device_name):
         """Initialize the switch."""
         self.hass = hass
-        self._name = name
+        self._name = name  # Sensor-specific name
         self._ip = ip
         self._port = port
         self._state = None
         self._available = True
-        self._unique_id = f"{unique_id}_switch"
+        self._attr_unique_id = f"{unique_id}_switch"
         self._attr_extra_state_attributes = {}
         self._entry_id = entry_id
+        self._device_name = device_name  # Device name from config flow
+        self._unique_id = unique_id  # Use this to link to the device
 
     @property
     def device_info(self):
-        """Return device information."""
+        """Return device information, ensuring the switch is tied to the same device with the config name."""
         return {
-            "identifiers": {(DOMAIN, self._entry_id)},
+            "identifiers": {(DOMAIN, self._unique_id)},  # Link to the single device
         }
 
     @property
     def name(self):
         """Return the name of the switch."""
-        return self._name
+        return self._name  # Return the friendly name for the switch
 
     @property
     def unique_id(self):
@@ -84,10 +87,10 @@ class SmartWBSwitch(SwitchEntity):
                         else:
                             _LOGGER.info(f"SmartWB command successful, but state unclear: {response_text}")
                             self._state = "true" in command  # Fallback to the original logic
-                    
+                        
                         self._available = True
                         self.async_write_ha_state()  # Immediately update the state
-                    
+
                         # Schedule a delayed update to confirm the state
                         self.hass.loop.call_later(10, lambda: asyncio.create_task(self._delayed_update()))
                     elif response_text.startswith("E0_"):
