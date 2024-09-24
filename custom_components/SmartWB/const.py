@@ -1,6 +1,6 @@
 """Constants for the SmartWB integration."""
 DOMAIN = "smartwb"
-PLATFORMS = ["sensor", "switch", "number"]
+PLATFORMS = ["sensor", "number", "switch"]
 
 DEFAULT_NAME = "SmartWB"
 DEFAULT_SCAN_INTERVAL = 10
