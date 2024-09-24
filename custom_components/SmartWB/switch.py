@@ -16,7 +16,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     switch = SmartWBSwitch(hass, f"{name}_switch", ip, port, config_entry.entry_id, config_entry.unique_id)
     async_add_entities([switch], True)
 
-class EVSESwitch(SwitchEntity):
+class SmartWBSwitch(SwitchEntity):
     """Representation of an SmartWB switch."""
 
     def __init__(self, hass, name, ip, port, entry_id, unique_id):
