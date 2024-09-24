@@ -1,0 +1,12 @@
+{
+  "domain": "smartwb",
+  "name": "SmartWB",
+  "codeowners": ["@DominikWrobel"],
+  "config_flow": true,
+  "dependencies": ["logger"],
+  "documentation": "https://github.com/DominikWrobel/SmartWB",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/DominikWrobel/SmartWB/issues",
+  "requirements": ["requests"],
+  "version": "0.9.5"
+}
