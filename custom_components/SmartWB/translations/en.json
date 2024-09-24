@@ -1,0 +1,15 @@
+{
+    "config": {
+      "step": {
+        "user": {
+          "title": "Configure your StartWB",
+          "description": "Enter the IP, port, and name for the SmartWB.",
+          "data": {
+            "ip_address": "IP Address",
+            "port": "Port",
+            "name": "Name"
+          }
+        }
+      }
+    }
+  }
