@@ -10,17 +10,18 @@ from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
 
-class SmartWBCurrentSlider(NumberEntity):
-    """Representation of an SmartWB current slider."""
+class EVSECurrentSlider(NumberEntity):
+    """Representation of an EVSE current slider."""
 
-    def __init__(self, name, ip, port, entry_id, unique_id):
+    def __init__(self, name, ip, port, unique_id, device_name):
         """Initialize the current slider."""
         self._name = name
         self._ip = ip
         self._port = port
         self._value = None
         self._attr_unique_id = f"{unique_id}_slider"
-        self._entry_id = entry_id
+        self._unique_id = unique_id  # Use this to link to the device
+        self._device_name = device_name
         self._attr_native_max_value = 32  # Default max value, will be updated
         self._attr_native_unit_of_measurement = "A"
 
@@ -28,7 +29,9 @@ class SmartWBCurrentSlider(NumberEntity):
     def device_info(self):
         """Return device information."""
         return {
-            "identifiers": {(DOMAIN, self._entry_id)},
+            "identifiers": {(DOMAIN, self._unique_id)},
+            "manufacturer": "SmartWB",
+            "model": "SimpleEVSE-WiFi",
         }
 
     @property
@@ -112,15 +115,14 @@ class SmartWBCurrentSlider(NumberEntity):
             self._value = None
 
 async def async_setup_entry(hass: HomeAssistant, config_entry: ConfigEntry, async_add_entities: AddEntitiesCallback):
-    """Set up the SmartWB number entities from a config entry."""
+    """Set up the EVSE number entities from a config entry."""
     ip = config_entry.data['ip_address']
     port = config_entry.data['port']
-    name = config_entry.data['name']
-    entry_id = config_entry.entry_id
+    device_name = config_entry.data['name']
     unique_id = config_entry.unique_id
 
     # Add the current slider
-    current_slider = SmartWBCurrentSlider(f"{name}_set_current", ip, port, entry_id, unique_id)
+    current_slider = EVSECurrentSlider(f"{device_name} Set Current", ip, port, unique_id, device_name)
 
     # Add the slider
     async_add_entities([current_slider], True)
