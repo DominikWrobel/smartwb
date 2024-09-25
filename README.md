@@ -61,4 +61,4 @@ If you like my work you can support me via:
 <figure class="wp-block-image size-large"><a href="https://www.buymeacoffee.com/dominikjwrc"><img src="https://homeassistantwithoutaplan.files.wordpress.com/2023/07/coffe-3.png?w=182" alt="" class="wp-image-64"/></a></figure>
 
 # Special thanks to:
-@kodacy for motivating me to make this integration.
+@kodacy for motivating me to make this integration and for the great icons.
