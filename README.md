@@ -37,7 +37,6 @@ This is how your custom_components directory should be:
 custom_components
 ├── SmartWB
 │   ├── __init__.py
-│   ├── binary_sensor.py
 │   ├── manifest.json
 │   ├── number.py
 │   ├── config_flow.py
