@@ -2,11 +2,16 @@ import aiohttp
 import asyncio
 import async_timeout
 import logging
-from homeassistant.components.sensor import SensorEntity
+from homeassistant.components.sensor import (
+    SensorEntity,
+    SensorDeviceClass,
+    SensorStateClass,
+)
 from homeassistant.core import HomeAssistant
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.exceptions import ConfigEntryNotReady
+from homeassistant.const import UnitOfEnergy
 from .const import DOMAIN
 
 _LOGGER = logging.getLogger(__name__)
@@ -27,6 +32,22 @@ class SmartWBSensor(SensorEntity):
         self._attr_unique_id = f"{unique_id}_{self._attribute}"
         self._unique_id = unique_id  # Links the sensor to the device
         self._device_name = device_name  # The device name from config flow
+
+        # Set proper unit for meter_reading sensor
+        if self._attribute == "meterReading":
+            self._attr_device_class = SensorDeviceClass.ENERGY
+            self._attr_state_class = SensorStateClass.TOTAL
+            self._attr_native_unit_of_measurement = UnitOfEnergy.KILO_WATT_HOUR
+            self._attr_suggested_display_precision = 2
+        else:
+            self._unit = unit
+
+    @property
+    def native_unit_of_measurement(self):
+        """Return the unit of measurement."""
+        if self._attribute == "meterReading":
+            return self._attr_native_unit_of_measurement
+        return self._unit
 
     @property
     def device_info(self):
