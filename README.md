@@ -12,9 +12,8 @@ This is a custom component to control your SimpleEVSE-WiFi car charger controlle
  - Icon change reflecting current vehicle state
  - You can use the switch or amp settings in automations
 
-![evse1](https://github.com/user-attachments/assets/35695a73-4087-40fa-8892-bd34e8d288d8)
+![839832dd098fef8a1b070222866d5daa618d7142](https://github.com/user-attachments/assets/20f7635d-5273-453c-b573-0691ead9fedd)
 
-![evse2](https://github.com/user-attachments/assets/f5d20228-0628-4144-aaad-e7bc725600c9)
 
 # Install with HACS recomended:
 It is possible to add it as a custom repository.
@@ -51,7 +50,8 @@ custom_components
 # Configuration Example:
 Search for SmartWB in Settings -> devices and services:
 
-![conf](https://github.com/user-attachments/assets/05be6737-dc74-4025-adfb-0414208b5a4e)
+![Przechwytywanie](https://github.com/user-attachments/assets/c7d62fad-6c0f-4c96-9bb8-d36b66ecf452)
+
 
 # Support
 
